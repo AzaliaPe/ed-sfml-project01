@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "Animation.hh"
 
 class Character
 {
@@ -11,7 +12,8 @@ class Character
         float cropHeight;
         float scaleX;
         float scaleY;
-
+        Animation** animations;
+        
         void InitSprite();
 
     public:
@@ -19,5 +21,8 @@ class Character
         ~Character();
         sf::Sprite* GetSprite() const;
         void FlipSpriteX(float);
+        void SetAnimations(Animation**);
+        Animation* GetAnimation(int) const;
 };
+
 
