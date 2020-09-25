@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Inputs.hh"
 #include "Character.hh"
+#include "BoxCollider.hh"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -210,7 +211,10 @@ int main()
         }
     );
 
-    character1->GetSprite()->setPosition(0, 300);
+    character1->GetSprite()->setPosition(400, 300);
+
+    BoxCollider* character1Collider = new BoxCollider(400, 300, new sf::Color(0, 255, 0, 255), 16, 16);
+    character1Collider->GetBoxShape()->setScale(SPRITE_SCALE, SPRITE_SCALE);
 
     //Esto es el loop principal, mientras la ventana este abierta, esto se va ejecutar.
     while (window->isOpen())
@@ -268,6 +272,9 @@ int main()
             window->draw(tile);
         }
 
+        character1Collider->GetBoxShape()->setPosition(character1->GetSprite()->getPosition());
+        window->draw(*character1Collider->GetBoxShape());
+        
         trampAnimation->Play(deltaTime);
         window->draw(*tileTramp);
 
