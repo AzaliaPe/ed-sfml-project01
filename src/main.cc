@@ -1,5 +1,7 @@
-#include<iostream>
+#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <box2d/box2d.h>
+
 #include "Inputs.hh"
 #include "Character.hh"
 #include "BoxCollider.hh"
@@ -12,7 +14,7 @@
 #define TILES3 "assets/sprites/tiles3.png"
 #define SPRITE_SCALE 4.f
 #define FPS 120
-#define PLAYER_MOVESPEED 0.2f
+#define PLAYER_MOVESPEED 3.f
 
 int main()
 {
@@ -20,6 +22,10 @@ int main()
     sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_NAME);
     //Aqui vas a guardar los eventos dentro de la ventana, eje: teclado, mouse, etc.
     sf::Event event;
+
+    //Physics Declarection
+    b2Vec2* gravity{new b2Vec2(0.f, 9.8f)};
+    b2World* world{new b2World(*gravity)};
 
     //Textures 
     sf::Texture* tilesTexture1{new sf::Texture()};
@@ -31,7 +37,7 @@ int main()
     sf::Texture* tilesTexture3{new sf::Texture()};
     tilesTexture3->loadFromFile(TILES3);
 
-
+    //Tiles
     const float tileBaseWidth{16 * SPRITE_SCALE};
     const float tileBaseHeight{16 * SPRITE_SCALE};
 
@@ -77,10 +83,6 @@ int main()
     sf::Sprite* tileTramp{new sf::Sprite(*tilesTexture3, *(new sf::IntRect(16 * 4, 16 * 11, 16, 16)))};
     tileTramp->setScale(SPRITE_SCALE, SPRITE_SCALE);
     Animation* trampAnimation{new Animation{11, 1, 4, tileTramp, 270}};
-    
-    sf::Sprite* tileTreasure{new sf::Sprite(*tilesTexture3, *(new sf::IntRect(16 * 19, 16 * 19, 16, 16)))};
-    tileTreasure->setScale(SPRITE_SCALE, SPRITE_SCALE);
-    Animation* treasureAnimation{new Animation{19, 19, 21, tileTreasure, 450}};
 
     sf::Sprite* tileFont1_1{new sf::Sprite(*tilesTexture3, *(new sf::IntRect(16 * 5, 16 * 3, 16, 16)))};
     tileFont1_1->setScale(SPRITE_SCALE, SPRITE_SCALE);
@@ -95,6 +97,20 @@ int main()
     sf::Sprite* tileFont2_2{new sf::Sprite(*tilesTexture3, *(new sf::IntRect(16 * 4, 16 * 2, 16, 16)))};
     tileFont2_2->setScale(SPRITE_SCALE, SPRITE_SCALE);
     Animation* font2_2Animation{new Animation{2, 4, 6, tileFont2_2, 250}};
+
+    //BoxCollider del Treasure 
+    sf::Sprite* tileTreasure{new sf::Sprite(*tilesTexture3, *(new sf::IntRect(16 * 19, 16 * 19, 16, 16)))};
+    tileTreasure->setScale(SPRITE_SCALE, SPRITE_SCALE);
+    tileTreasure->setPosition(400, 400);
+
+    BoxCollider* treasureCollider = new BoxCollider(300, 250, new sf::Color(0, 255, 0, 255), 16, 16,
+    new Rigidbody(world, b2BodyType::b2_staticBody, new b2Vec2(400, 400), tileBaseWidth / 2, tileBaseHeight / 2, 1, 0, 0));
+    
+    treasureCollider->GetBoxShape()->setScale(SPRITE_SCALE, SPRITE_SCALE);
+    treasureCollider->GetBoxShape()->setPosition(tileTreasure->getPosition());
+
+    //Animación del Treasure 
+    Animation* treasureAnimation{new Animation{19, 19, 21, tileTreasure, 450}};
 
     char** titles
         {
@@ -185,8 +201,6 @@ int main()
     
     tileTramp->setPosition(64*3, 64*4);
 
-    tileTreasure->setPosition(64*8, 64*2);
-
     tileFont1_1->setPosition(64*2, 64*1);
     tileFont1_2->setPosition(64*2, 64*2);
 
@@ -194,7 +208,7 @@ int main()
     tileFont2_2->setPosition(64*5, 64*2);
 
     sf::Clock* clock{new sf::Clock()};
-    float deltaTime{};
+    float deltaTime{};//tiempo que transcurre entre punto A hasta el punto B.
 
     window->setFramerateLimit(FPS);
 
@@ -213,12 +227,13 @@ int main()
 
     character1->GetSprite()->setPosition(400, 300);
 
-    BoxCollider* character1Collider = new BoxCollider(400, 300, new sf::Color(0, 255, 0, 255), 16, 16);
+    BoxCollider* character1Collider = new BoxCollider(400, 300, new sf::Color(0, 255, 0, 255), 16, 16,
+    new Rigidbody(world, b2BodyType::b2_dynamicBody, new b2Vec2(400, 300), tileBaseWidth / 2, tileBaseHeight / 2, 1, 0, 0));
     character1Collider->GetBoxShape()->setScale(SPRITE_SCALE, SPRITE_SCALE);
 
     //Esto es el loop principal, mientras la ventana este abierta, esto se va ejecutar.
     while (window->isOpen())
-    {
+    {   
         //Mientras se esten ejecutando eventos dentro de la ventana, esto se va repetir eje: teclado, joystick, mouse, etc
         while (window->pollEvent(event))
         {
@@ -232,9 +247,15 @@ int main()
         Vec2* keyboardAxis{inputs->GetKeyboardAxis()};
         Vec2* joystickAxis{inputs->GetJoystickAxis()};
 
+        //player sigue la posicion del cuerpo de física
+        character1Collider->UpdatePhysics();
+        treasureCollider->UpdatePhysics();
+
+        character1->GetSprite()->setPosition(character1Collider->GetBodyPosition().x, character1Collider->GetBodyPosition().y);
+        tileTreasure->setPosition(treasureCollider->GetBodyPosition().x, treasureCollider->GetBodyPosition().y);
+
         if(sf::Joystick::isConnected(0))
         {
-            character1->GetSprite()->move(joystickAxis->x * deltaTime * PLAYER_MOVESPEED, joystickAxis->y * deltaTime * PLAYER_MOVESPEED);
             character1->FlipSpriteX(joystickAxis->x);
             
             if(std::abs(joystickAxis->x) > 0 || std::abs(joystickAxis->y) > 0)
@@ -250,7 +271,6 @@ int main()
         }
         else
         {
-            character1->GetSprite()->move(keyboardAxis->x * deltaTime * PLAYER_MOVESPEED, keyboardAxis->y * deltaTime * PLAYER_MOVESPEED);
             character1->FlipSpriteX(keyboardAxis->x);
 
             if(std::abs(keyboardAxis->x) > 0 || std::abs(keyboardAxis->y) > 0)
@@ -271,9 +291,6 @@ int main()
         {
             window->draw(tile);
         }
-
-        character1Collider->GetBoxShape()->setPosition(character1->GetSprite()->getPosition());
-        window->draw(*character1Collider->GetBoxShape());
         
         trampAnimation->Play(deltaTime);
         window->draw(*tileTramp);
@@ -291,11 +308,18 @@ int main()
         font2_2Animation->Play(deltaTime);
         window->draw(*tileFont2_2);
 
+        character1Collider->GetBoxShape()->setPosition(character1->GetSprite()->getPosition());
+        window->draw(*character1Collider->GetBoxShape());
+
+        window->draw(*treasureCollider->GetBoxShape());
+
         window->draw(*character1->GetSprite());
         window->display(); //display para mostrar.
 
         sf::Time timeElapsed = clock->getElapsedTime();
         deltaTime = timeElapsed.asMilliseconds();
+        world->ClearForces();
+        world->Step(1.f / 100 * deltaTime, 8, 8);
         clock->restart();
 
         //std::cout << "delta time: " << deltaTime << std::endl;

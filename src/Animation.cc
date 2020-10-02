@@ -17,7 +17,7 @@ Animation::~Animation(){}
 
 void Animation::Play(float& deltaTime)
 {
-    timer += deltaTime;
+    timer += deltaTime; //yo mismo soy igual mas el valor que ya traigo más el valor 
     if(timer >= delay)
     {
         if(currentFrame + 1 > endFrame)
