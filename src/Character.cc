@@ -1,7 +1,7 @@
 #include "Character.hh"
 
 Character::Character(sf::Texture*& texture, float cropPosX, float cropPosY, float cropWidth, 
-float cropHeight, float scaleX, float scaleY, b2World*& world)
+float cropHeight, float scaleX, float scaleY, b2World*& world, sf::RenderWindow*& window)
 {
     this->texture = texture;
     this->cropPosX = cropPosX;
@@ -10,6 +10,7 @@ float cropHeight, float scaleX, float scaleY, b2World*& world)
     this->cropHeight = cropHeight;
     this->scaleX = scaleX;
     this->scaleY = scaleY;
+    this->window = window;
 
     tileBaseWidth = cropWidth * scaleX;
     tileBaseHeight = cropHeight * scaleY;
@@ -35,15 +36,25 @@ void Character::Move(b2Vec2* direction)
 
 sf::Sprite* Character::GetSprite() 
 {
-    boxCollider->UpdatePhysics();
     return sprite;
+}
+
+void Character::SetPosition(float posX, float posY)
+{
+    sprite->setPosition(posX, posY);
+}
+
+void Character::Update()
+{
+    boxCollider->UpdatePhysics();
+    window->draw(*sprite);
+    window->draw(*boxCollider->GetBoxShape());
 }
 
 BoxCollider* Character::GetCollider() const
 {
     return boxCollider;
 }
-
 
 void Character::FlipSpriteX(float x)
 {

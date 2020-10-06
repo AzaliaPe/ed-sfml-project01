@@ -17,11 +17,12 @@ class Character
         BoxCollider* boxCollider;
         float tileBaseWidth;
         float tileBaseHeight;
-        
+        sf::RenderWindow* window;
+
         void InitSprite(b2World*&);
 
     public:
-        Character(sf::Texture*&, float, float, float, float, float, float, b2World*&);
+        Character(sf::Texture*&, float, float, float, float, float, float, b2World*&, sf::RenderWindow*&);
         ~Character();
         sf::Sprite* GetSprite();
         void FlipSpriteX(float);
@@ -29,6 +30,10 @@ class Character
         Animation* GetAnimation(int) const;
         void Move(b2Vec2*);
         BoxCollider* GetCollider() const;
+        void Update();
+        void SetPosition(float, float);
 };
+
+
 
 

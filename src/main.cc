@@ -217,7 +217,7 @@ int main()
     Inputs* inputs{new Inputs()};
  
     //Main player
-    Character* character1{new Character(tilesTexture2, 16 * 1, 16 * 5, 16, 16, SPRITE_SCALE, SPRITE_SCALE, world)};
+    Character* character1{new Character(tilesTexture2, 16 * 1, 16 * 5, 16, 16, SPRITE_SCALE, SPRITE_SCALE, world, window)};
     character1->SetAnimations(
         new Animation*[2]
         {
@@ -226,12 +226,7 @@ int main()
         }
     );
 
-    character1->GetSprite()->setPosition(400, 300);
-
-    // BoxCollider* character1Collider = new BoxCollider(400, 300, new sf::Color(0, 255, 0, 255), 16, 16,
-    // new Rigidbody(world, b2BodyType::b2_dynamicBody, new b2Vec2(400, 300), tileBaseWidth / 2, tileBaseHeight / 2, 1, 0, 0),
-    // character1->GetSprite());
-    // character1Collider->GetBoxShape()->setScale(SPRITE_SCALE, SPRITE_SCALE);
+    character1->SetPosition(400, 300);
 
     //Esto es el loop principal, mientras la ventana este abierta, esto se va ejecutar.
     while (window->isOpen())
@@ -250,7 +245,6 @@ int main()
         Vec2* joystickAxis{inputs->GetJoystickAxis()};
 
         //player sigue la posicion del cuerpo de física
-        // character1Collider->UpdatePhysics();
         treasureCollider->UpdatePhysics();
 
         if(sf::Joystick::isConnected(0))
@@ -308,13 +302,9 @@ int main()
         window->draw(*tileFont2_1);
         font2_2Animation->Play(deltaTime);
         window->draw(*tileFont2_2);
-
-        // character1Collider->GetBoxShape()->setPosition(character1->GetSprite()->getPosition());
-
         window->draw(*treasureCollider->GetBoxShape());
-
-        window->draw(*character1->GetSprite());
-        window->draw(*character1->GetCollider()->GetBoxShape());
+        
+        character1->Update();
         window->display(); //display para mostrar.
 
         sf::Time timeElapsed = clock->getElapsedTime();
