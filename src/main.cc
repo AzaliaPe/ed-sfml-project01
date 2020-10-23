@@ -2,9 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 
+#include "Maze.hh"
 #include "Inputs.hh"
 #include "Character.hh"
-// #include "BoxCollider.hh"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -113,31 +113,19 @@ int main()
     //Animación del Treasure 
     Animation* treasureAnimation{new Animation{19, 19, 21, tileTreasure, 450}};
 
-    char** titles
-        {
-            new char*[10]
-            {
-                new char[13]{'u', 'v', 'e', 'f', 'w', 'w', 'r', 'w', 'v', 'f', 'e', 'u', 'r'},
-                new char[13]{'x', 'w', 'w', 'w', 'w', 'w', 't', 'w', 'w', 'w', 'b', 'x', 'w'},
-                new char[13]{'j', 'g', 'g', 's', 'g', 'g', 'g', 's', 'g', 'g', 'c', 'j', 'g'},
-                new char[13]{'g', 'g', 'g', 'g', 's', 'g', 'g', 'z', 'g', 'g', 'g', 'g', 'n'},
-                new char[13]{'s', 'g', 'a', 's', 'g', 'g', 'g', 'g', 'g', 's', 'g', 'p', 'a'},
-                new char[13]{'g', 'g', 'g', 'g', 'a', 'g', 'm', 'g', 'g', 'g', 'p', 'g', 'z'},
-                new char[13]{'g', 'g', 'g', 'g', 'g', 'g', 'p', 'a', 'g', 'g', 'g', 'g', 'g'},
-                new char[13]{'g', 'g', 's', 'g', 'z', 'g', 'g', 's', 'g', 'g', 'g', 'z', 'g'},
-                new char[13]{'z', 'g', 'n', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'm', 'g', 'g'},
-                new char[13]{'z', 'z', 'a', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z'}
-            }
-        };
+    unsigned int N{10}, M{13};
+    Maze* maze1{new Maze(N, M, "assets/mazes/maze1.txt")};
 
     std::vector<sf::Sprite> mazeSprite;
 
-    for (int i ={}; i < 10; i++)
+    for(int i = 0; i < N; i++)
     {
-        for (int x = 0; x < 13; x++)
+        for(int x = 0; x < M; x++)
         {
-        char& title = *(*(titles + i) + x);
-           switch (title)
+
+           char& tile{maze1->GetTiles()[i][x]};
+
+           switch (tile)
            {
             case 'w'://Pared normal
                 mazeSprite.push_back(*tileWall1);
