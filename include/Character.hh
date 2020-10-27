@@ -19,10 +19,10 @@ class Character
         float tileBaseHeight;
         sf::RenderWindow* window;
 
-        void InitSprite(b2World*&);
+        void InitSprite(b2World*&, b2Vec2*);
 
     public:
-        Character(sf::Texture*&, float, float, float, float, float, float, b2World*&, sf::RenderWindow*&);
+        Character(sf::Texture*&, float, float, float, float, float, float, b2Vec2*, b2World*&, sf::RenderWindow*&);
         ~Character();
         sf::Sprite* GetSprite();
         void FlipSpriteX(float);
@@ -33,7 +33,3 @@ class Character
         void Update();
         void SetPosition(float, float);
 };
-
-
-
-

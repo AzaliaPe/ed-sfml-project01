@@ -5,6 +5,7 @@
 #include "Maze.hh"
 #include "Inputs.hh"
 #include "Character.hh"
+#include "Tile.hh"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -12,9 +13,11 @@
 #define TILES1 "assets/sprites/tiles1.png"
 #define TILES2 "assets/sprites/tiles2.png"
 #define TILES3 "assets/sprites/tiles3.png"
-#define SPRITE_SCALE 4.f
+// #define SPRITE_SCALE 4.f
 #define FPS 120
 #define PLAYER_MOVESPEED 3.f
+
+const float SPRITE_SCALE(4.f);
 
 int main()
 {
@@ -114,79 +117,7 @@ int main()
     Animation* treasureAnimation{new Animation{19, 19, 21, tileTreasure, 450}};
 
     unsigned int N{10}, M{13};
-    Maze* maze1{new Maze(N, M, "assets/mazes/maze1.txt")};
-
-    std::vector<sf::Sprite> mazeSprite;
-
-    for(int i = 0; i < N; i++)
-    {
-        for(int x = 0; x < M; x++)
-        {
-
-           char& tile{maze1->GetTiles()[i][x]};
-
-           switch (tile)
-           {
-            case 'w'://Pared normal
-                mazeSprite.push_back(*tileWall1);
-               break;
-            case 'e'://Bandera roja
-                mazeSprite.push_back(*tileWall2);
-               break;
-            case 'r'://Bandera azul
-                mazeSprite.push_back(*tileWall3);
-               break;
-            case 'f'://Bandera amarilla
-                mazeSprite.push_back(*tileWall4);
-                break;
-            case 't'://Pared con hoyo
-                mazeSprite.push_back(*tileWall5);
-               break;
-            case 'v'://Bandera verde
-                mazeSprite.push_back(*tileWall6);
-                break;
-            case 'b'://Pared cosa verde
-                mazeSprite.push_back(*tileWall7);
-                break;
-            case 'u'://Pared pilar1
-                mazeSprite.push_back(*tileWall8);
-                break;
-            case 'x'://Pared pilar2
-                mazeSprite.push_back(*tileWall9);
-                break;
-            case 'g'://Piso normal
-                mazeSprite.push_back(*tileGround1);
-               break;
-            case 'a'://Piso roto esquina inferior izquierda
-                mazeSprite.push_back(*tileGround2);
-               break;
-            case 's'://Piso roto esquina superior izquierda
-                mazeSprite.push_back(*tileGround3);
-               break;
-            case 'm'://Piso donde sale una escalera
-                mazeSprite.push_back(*tileGround4);
-               break;
-            case 'z'://Piso quebrado
-                mazeSprite.push_back(*tileGround5);
-               break;
-            case 'p'://Piso roto con hoyitos
-                mazeSprite.push_back(*tileGround6);
-               break;
-            case 'c'://Piso donde cae la cosa verde
-                mazeSprite.push_back(*tileGround7);
-               break;
-            case 'n'://Piso donde hay un agujero
-                mazeSprite.push_back(*tileGround8);
-               break;
-            case 'j'://Piso donde esta el pilar
-                mazeSprite.push_back(*tileGround9);
-               break;
-            default:
-               break;
-           }
-           mazeSprite.back().move(tileBaseWidth * x, tileBaseHeight * i);
-        }
-    }
+    Maze* maze1{new Maze(N, M, SPRITE_SCALE, 16, tilesTexture3, "assets/mazes/maze1.txt")};
     
     tileTramp->setPosition(64*3, 64*4);
 
@@ -203,9 +134,9 @@ int main()
 
     //Game inputs
     Inputs* inputs{new Inputs()};
- 
+    
     //Main player
-    Character* character1{new Character(tilesTexture2, 16 * 1, 16 * 5, 16, 16, SPRITE_SCALE, SPRITE_SCALE, world, window)};
+    Character* character1{new Character(tilesTexture2, 16 * 1, 16 * 5, 16, 16, SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(400, 300), world, window)};
     character1->SetAnimations(
         new Animation*[2]
         {
@@ -214,7 +145,7 @@ int main()
         }
     );
 
-    character1->SetPosition(400, 300);
+    // character1->SetPosition(400, 300);
 
     //Esto es el loop principal, mientras la ventana este abierta, esto se va ejecutar.
     while (window->isOpen())
@@ -270,9 +201,9 @@ int main()
 
         window->clear(*(new sf::Color(26, 26, 26, 100)));//Limpiar la pantalla y poner un color.
         
-        for(auto& tile : mazeSprite)
+        for(auto& tile : *maze1->GetContainer())
         {
-            window->draw(tile);
+            window->draw(*tile->GetSprite());
         }
         
         trampAnimation->Play(deltaTime);

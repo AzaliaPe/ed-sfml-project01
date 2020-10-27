@@ -1,7 +1,7 @@
 #include "Character.hh"
 
 Character::Character(sf::Texture*& texture, float cropPosX, float cropPosY, float cropWidth, 
-float cropHeight, float scaleX, float scaleY, b2World*& world, sf::RenderWindow*& window)
+float cropHeight, float scaleX, float scaleY, b2Vec2* position, b2World*& world, sf::RenderWindow*& window)
 {
     this->texture = texture;
     this->cropPosX = cropPosX;
@@ -15,16 +15,16 @@ float cropHeight, float scaleX, float scaleY, b2World*& world, sf::RenderWindow*
     tileBaseWidth = cropWidth * scaleX;
     tileBaseHeight = cropHeight * scaleY;
 
-    InitSprite(world);
+    InitSprite(world, position);
 }
 
-void Character::InitSprite(b2World*& world)
+void Character::InitSprite(b2World*& world, b2Vec2* position)
 {
     sprite = new sf::Sprite(*texture, *(new sf::IntRect(cropPosX, cropPosY, cropWidth, cropHeight)));
     sprite->setScale(*(new sf::Vector2f(scaleX, scaleY)));
 
-    boxCollider = new BoxCollider(sprite->getPosition().x, sprite->getPosition().y, new sf::Color(0, 255, 0, 255), cropWidth, cropHeight,
-    new Rigidbody(world, b2BodyType::b2_dynamicBody, new b2Vec2(sprite->getPosition().x, sprite->getPosition().y), tileBaseWidth / 2, tileBaseHeight / 2, 1, 0, 0),
+    boxCollider = new BoxCollider(position->x, position->y, new sf::Color(0, 255, 0, 255), cropWidth, cropHeight,
+    new Rigidbody(world, b2BodyType::b2_dynamicBody, position, tileBaseWidth / 2, tileBaseHeight / 2, 1, 0, 0),
     sprite);
     boxCollider->GetBoxShape()->setScale(scaleX, scaleY);
 }
