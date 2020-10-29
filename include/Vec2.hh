@@ -1,3 +1,5 @@
+#pragma once
+
 struct Vec2
 {
     float x{}; //las llaves son para inicializar en 0

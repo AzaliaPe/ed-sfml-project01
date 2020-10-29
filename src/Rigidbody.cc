@@ -26,3 +26,8 @@ b2Body* Rigidbody::GetBody() const
 {
     return body;
 }
+
+void Rigidbody::SetUserData(void* userData)
+{
+    body->SetUserData(userData);
+}

@@ -1,7 +1,7 @@
 #pragma once
-#include<fstream>
-#include<iostream>
-#include<SFML/Graphics.hpp>
+#include <fstream>
+#include <iostream>
+#include <SFML/Graphics.hpp>
 #include "Tile.hh"
 
 class Maze

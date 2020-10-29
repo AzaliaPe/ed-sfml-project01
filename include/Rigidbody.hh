@@ -1,4 +1,5 @@
-#include<box2d/box2d.h>
+#pragma once
+#include <box2d/box2d.h>
 
 class Rigidbody
 {
@@ -12,4 +13,5 @@ class Rigidbody
         Rigidbody(b2World*&, b2BodyType, b2Vec2*, float, float, float, float, float);
         ~Rigidbody();
         b2Body* GetBody() const;
+        void SetUserData(void*);
 };
