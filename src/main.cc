@@ -15,6 +15,7 @@
 #define TILES1 "assets/sprites/tiles1.png"
 #define TILES2 "assets/sprites/tiles2.png"
 #define TILES3 "assets/sprites/tiles3.png"
+#define FONT1 "assets/fonts/8-BIT_WONDER.TTF"
 #define SPRITE_SCALE 4.f
 #define FPS 120
 #define PLAYER_MOVESPEED 3.0f
@@ -26,11 +27,22 @@ int main()
     //Aqui vas a guardar los eventos dentro de la ventana, eje: teclado, mouse, etc.
     sf::Event event;
 
+    sf::Font* font1{new sf::Font()};
+    font1->loadFromFile(FONT1);
+
+    sf::Text* scoreText{new sf::Text()};
+    scoreText->setFont(*font1);
+
+    scoreText->setString("Score 0");
+    scoreText->setCharacterSize(24);
+    scoreText->setFillColor(sf::Color::White);
+    // scoreText->setStyle(sf::Text::Bold);
+
     //physics declaration
     b2Vec2* gravity{new b2Vec2(0.f, 0.f)};
     b2World* world{new b2World(*gravity)}; 
     
-    world->SetContactListener(new ContactListener());
+    world->SetContactListener(new ContactListener(scoreText));
 
     sf::Clock* clock{new sf::Clock()};
     float deltaTime{};
@@ -154,9 +166,10 @@ int main()
             window->draw(*tile->GetSprite());
         }
 
+        window->draw(*scoreText);
+
         trampAnimation->Play(deltaTime);
         window->draw(*tileTramp);
-
         
         font1_1Animation->Play(deltaTime);
         window->draw(*tileFont1_1);
