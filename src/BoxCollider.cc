@@ -13,7 +13,10 @@ BoxCollider::BoxCollider(float posX, float posY, sf::Color* borderColor, float w
     InitShape();
 }
 
-BoxCollider::~BoxCollider(){}
+BoxCollider::~BoxCollider()
+{
+    rigidbody->~Rigidbody();
+}
 
 void BoxCollider::InitShape()
 {

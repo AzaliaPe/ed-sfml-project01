@@ -8,6 +8,7 @@
 #include "Tile.hh"
 #include "GameObject.hh"
 #include "ContactListener.hh"
+#include "Score.hh"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -27,22 +28,11 @@ int main()
     //Aqui vas a guardar los eventos dentro de la ventana, eje: teclado, mouse, etc.
     sf::Event event;
 
-    sf::Font* font1{new sf::Font()};
-    font1->loadFromFile(FONT1);
-
-    sf::Text* scoreText{new sf::Text()};
-    scoreText->setFont(*font1);
-
-    scoreText->setString("Score 0");
-    scoreText->setCharacterSize(24);
-    scoreText->setFillColor(sf::Color::White);
-    // scoreText->setStyle(sf::Text::Bold);
+    Score* score{new Score(FONT1, "Score ", 24, new sf::Vector2f(25, 5), new sf::Color(255, 255, 255), window)};
 
     //physics declaration
     b2Vec2* gravity{new b2Vec2(0.f, 0.f)};
     b2World* world{new b2World(*gravity)}; 
-    
-    world->SetContactListener(new ContactListener(scoreText));
 
     sf::Clock* clock{new sf::Clock()};
     float deltaTime{};
@@ -109,6 +99,15 @@ int main()
     GameObject* treasure{new GameObject(tilesTexture3, 16 * 19, 16 * 19, 16, 16, 
     SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(400, 400), b2BodyType::b2_staticBody, world, window)}; 
     treasure->SetTagName("item");
+    GameObject* treasure2{new GameObject(tilesTexture3, 16 * 19, 16 * 19, 16, 16, 
+    SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(200, 400), b2BodyType::b2_staticBody, world, window)}; 
+    treasure2->SetTagName("item");
+
+    std::vector<GameObject*>* items{new std::vector<GameObject*>()};
+    items->push_back(treasure);
+    items->push_back(treasure2);
+
+    world->SetContactListener(new ContactListener(score, items));
 
     //Esto es el loop principal, mientras la ventana este abierta, esto se va ejecutar.
     while (window->isOpen())
@@ -166,8 +165,6 @@ int main()
             window->draw(*tile->GetSprite());
         }
 
-        window->draw(*scoreText);
-
         trampAnimation->Play(deltaTime);
         window->draw(*tileTramp);
         
@@ -182,7 +179,14 @@ int main()
         window->draw(*tileFont2_2);
 
         character1->Update();
-        treasure->Update();
+
+        for(auto& item : *items)
+        {
+            item->Update();
+        }
+
+        score->Update();
+
         window->display(); //display para mostrar.
 
         sf::Time timeElapsed = clock->getElapsedTime();
