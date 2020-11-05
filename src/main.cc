@@ -73,7 +73,7 @@ int main()
     Animation* font2_2Animation{new Animation{2, 4, 6, tileFont2_2, 250}};
 
     unsigned int N{10}, M{13};
-    Maze* maze1{new Maze(N, M, SPRITE_SCALE, 16, tilesTexture3, "assets/mazes/maze1.txt")};
+    Maze* maze1{new Maze(N, M, SPRITE_SCALE, 16, tilesTexture3, "assets/mazes/maze1.txt", world)};
 
     tileTramp->setPosition(64*3, 64*4);
 
@@ -95,6 +95,7 @@ int main()
     );
 
     character1->SetTagName("player");
+    // character1->SetDebug(true);
 
     GameObject* treasure{new GameObject(tilesTexture3, 16 * 19, 16 * 19, 16, 16, 
     SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(400, 400), b2BodyType::b2_staticBody, world, window)}; 

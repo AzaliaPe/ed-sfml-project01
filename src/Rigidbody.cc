@@ -1,5 +1,6 @@
 #include "Rigidbody.hh"
 
+#include<iostream>
 Rigidbody::Rigidbody(b2World*& world, b2BodyType bodyType, b2Vec2* position, 
 float boxWidth, float boxHeight, float density, float friction, float restitution)
 {
@@ -35,4 +36,9 @@ b2Body* Rigidbody::GetBody() const
 void Rigidbody::SetUserData(void* userData)
 {
     body->SetUserData(userData);
+}
+
+void Rigidbody::SetSensor(bool status)
+{
+    fixture->SetSensor(status);
 }

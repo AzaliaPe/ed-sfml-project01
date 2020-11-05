@@ -48,7 +48,7 @@ void GameObject::Update()
 {
     boxCollider->UpdatePhysics();
     window->draw(*sprite);
-    window->draw(*boxCollider->GetBoxShape());
+    if(debug) window->draw(*boxCollider->GetBoxShape());
 }
 
 BoxCollider* GameObject::GetCollider() const
@@ -64,4 +64,14 @@ const char* GameObject::GetTagName() const
 void GameObject::SetTagName(const char* tagName)
 {
     this->tagName = tagName;
+}
+
+bool GameObject::GetDebug() const
+{
+    return debug;
+}
+
+void GameObject::SetDebug(bool debug)
+{
+    this->debug = debug;
 }

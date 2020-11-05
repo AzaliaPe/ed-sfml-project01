@@ -15,4 +15,5 @@ class Rigidbody
         ~Rigidbody();
         b2Body* GetBody() const;
         void SetUserData(void*);
+        void SetSensor(bool);
 };

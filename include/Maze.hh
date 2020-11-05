@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Tile.hh"
+#include <box2d/box2d.h>
 
 class Maze
 {
@@ -14,8 +15,9 @@ class Maze
         float scale, cropSize;
         sf::Texture* texture;
         std::vector<Tile*>* container{new std::vector<Tile*>()};
+        b2World* world;
     public:
-        Maze(unsigned int, unsigned int, float, float, sf::Texture*&, const char*);
+        Maze(unsigned int, unsigned int, float, float, sf::Texture*&, const char*, b2World*&);
         void AllocateMemory();
         void FillArray();
         char** GetTiles() const;
