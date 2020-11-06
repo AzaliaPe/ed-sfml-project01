@@ -41,16 +41,6 @@ void Tile::SetPosition(float x, float y)
     sprite->setPosition(x, y);
 }
 
-void Tile::SetTagName(const char* tagName)
-{
-    this->tagName = tagName;
-}
-
-const char* Tile::GetTagName() const
-{
-    return tagName;
-}
-
 void Tile::TurnPhysicsOn(float x, float y)
 {
     Rigidbody* rb{new Rigidbody(world, b2BodyType::b2_staticBody, new b2Vec2(x, y), 
@@ -58,15 +48,4 @@ void Tile::TurnPhysicsOn(float x, float y)
 
     boxCollider = new BoxCollider(x, y, new sf::Color(0, 255, 0, 255), cropSize, cropSize, rb, sprite);
     boxCollider->GetBoxShape()->setScale(scale, scale);
-}
-
-void Tile::TurnPhysicsOn(float x, float y, bool isSensor)
-{
-    Rigidbody* rb{new Rigidbody(world, b2BodyType::b2_staticBody, new b2Vec2(x, y), 
-    cropSize * scale / 2, cropSize * scale / 2, 1, 0, 0)};
-
-    boxCollider = new BoxCollider(x, y, new sf::Color(0, 255, 0, 255), cropSize, cropSize, rb, sprite);
-    boxCollider->GetBoxShape()->setScale(scale, scale);
-    rb->SetSensor(isSensor);
-    rb->SetUserData((void*) this);
 }

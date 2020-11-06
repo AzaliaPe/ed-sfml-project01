@@ -91,11 +91,11 @@ void Maze::Generate()
             case 's'://Piso roto esquina superior izquierda
                 container->push_back(new Tile(cropSize * 2, cropSize * 6, scale, cropSize, texture));
                break;
-            case 'm'://Piso donde sale una escalera
-                container->push_back(new Tile(cropSize * 3, cropSize * 6, scale, cropSize, texture, world));
-                container->back()->TurnPhysicsOn(cropSize * scale * j, cropSize * scale * i, true);
-                container->back()->SetTagName("door");
-               break;
+            // case 'm'://Piso donde sale una escalera
+                // container->push_back(new Tile(cropSize * 3, cropSize * 6, scale, cropSize, texture, world));
+                // container->back()->TurnPhysicsOn(cropSize * scale * j, cropSize * scale * i);
+                // container->back()->SetTagName("door");
+            //    break;
             case 'z'://Piso quebrado
                 container->push_back(new Tile(cropSize * 2, cropSize * 4, scale, cropSize, texture));
                break;

@@ -108,6 +108,11 @@ int main()
     items->push_back(treasure);
     items->push_back(treasure2);
 
+    GameObject* stairs{new GameObject(tilesTexture3, 16 * 3, 16 * 6, 16, 16, 
+    SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(510, 510), b2BodyType::b2_staticBody, world, window)};
+    stairs->SetTagName("stairs");
+    // stairs->SetDebug(true);
+
     world->SetContactListener(new ContactListener(score, items));
 
     //Esto es el loop principal, mientras la ventana este abierta, esto se va ejecutar.
@@ -166,6 +171,8 @@ int main()
             window->draw(*tile->GetSprite());
         }
 
+        stairs->Update();       
+
         trampAnimation->Play(deltaTime);
         window->draw(*tileTramp);
         
@@ -185,7 +192,7 @@ int main()
         {
             item->Update();
         }
-
+      
         score->Update();
 
         window->display(); //display para mostrar.
