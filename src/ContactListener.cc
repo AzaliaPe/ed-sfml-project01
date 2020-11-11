@@ -15,6 +15,11 @@ ContactListener::~ContactListener()
 {
 }
 
+int ContactListener::GetSceneIndex() const
+{
+    return sceneIndex;
+}
+
 void ContactListener::BeginContact(b2Contact* contact)
 {
     GameObject* bodyDataA = (GameObject*) contact->GetFixtureA()->GetBody()->GetUserData();
@@ -32,6 +37,8 @@ void ContactListener::BeginContact(b2Contact* contact)
         if(std::strcmp(bodyDataA->GetTagName(), "player") == 0 && std::strcmp(bodyDataB->GetTagName(), "stairs") == 0)
         {
             std::cout << "stairs" << std::endl;
+            bodyDataB->~GameObject();
+            sceneIndex++;
         }
     }
 }

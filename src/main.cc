@@ -41,7 +41,7 @@ int main()
     
     //Game inputs
     Inputs* inputs{new Inputs()};
-    
+
     //Textures
     sf::Texture* tilesTexture1{new sf::Texture()};
     tilesTexture1->loadFromFile(TILES1);
@@ -72,9 +72,6 @@ int main()
     tileFont2_2->setScale(SPRITE_SCALE, SPRITE_SCALE);
     Animation* font2_2Animation{new Animation{2, 4, 6, tileFont2_2, 250}};
 
-    unsigned int N{10}, M{13};
-    Maze* maze1{new Maze(N, M, SPRITE_SCALE, 16, tilesTexture3, "assets/mazes/maze1.txt", world)};
-
     tileTramp->setPosition(64*3, 64*4);
 
     tileFont1_1->setPosition(64*4, 64*1);
@@ -93,9 +90,14 @@ int main()
             new Animation(6, 0, 5, character1->GetSprite(), 80.f)
         }
     );
-
+    
     character1->SetTagName("player");
-    // character1->SetDebug(true);
+    //character1->SetDebug(true);
+
+    unsigned int N{10}, M{13};
+    Maze* maze1{new Maze(N, M, SPRITE_SCALE, 16, tilesTexture3, "assets/mazes/maze1.txt", world)};
+    Maze* maze2{new Maze(N, M, SPRITE_SCALE, 16, tilesTexture3, "assets/mazes/maze2.txt", world)};
+    Maze*& currentMaze{*&maze1};
 
     GameObject* treasure{new GameObject(tilesTexture3, 16 * 19, 16 * 19, 16, 16, 
     SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(400, 400), b2BodyType::b2_staticBody, world, window)}; 
@@ -104,16 +106,19 @@ int main()
     SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(200, 400), b2BodyType::b2_staticBody, world, window)}; 
     treasure2->SetTagName("item");
 
-    std::vector<GameObject*>* items{new std::vector<GameObject*>()};
-    items->push_back(treasure);
-    items->push_back(treasure2);
-
     GameObject* stairs{new GameObject(tilesTexture3, 16 * 3, 16 * 6, 16, 16, 
     SPRITE_SCALE, SPRITE_SCALE, new b2Vec2(510, 510), b2BodyType::b2_staticBody, world, window)};
     stairs->SetTagName("stairs");
-    // stairs->SetDebug(true);
+    //stairs->SetDebug(true);
 
-    world->SetContactListener(new ContactListener(score, items));
+    std::vector<GameObject*>* items{new std::vector<GameObject*>()};
+    items->push_back(treasure);
+    items->push_back(treasure2);
+    items->push_back(stairs);
+
+    ContactListener* conctactListener{new ContactListener(score, items)};
+
+    world->SetContactListener(conctactListener);
 
     //Esto es el loop principal, mientras la ventana este abierta, esto se va ejecutar.
     while (window->isOpen())
@@ -126,6 +131,19 @@ int main()
             {
                 window->close();
             }
+        }
+
+        switch (conctactListener->GetSceneIndex())
+        {
+            case 0:
+                currentMaze = maze1;
+                break;
+            case 1:
+                currentMaze = maze2;
+                break;
+            default:
+                currentMaze = maze1;
+                break;
         }
         
         Vec2* keyboardAxis{inputs->GetKeyboardAxis()};
@@ -166,12 +184,12 @@ int main()
 
         window->clear(*(new sf::Color(26, 26, 26, 100)));//Limpiar la pantalla y poner un color.
 
-        for(auto& tile : *maze1->GetContainer())
+        for(auto& mazeTile : *currentMaze->GetContainer())
         {
-            window->draw(*tile->GetSprite());
+            window->draw(*mazeTile->GetSprite());
         }
 
-        stairs->Update();       
+        //stairs->Update();
 
         trampAnimation->Play(deltaTime);
         window->draw(*tileTramp);
@@ -185,14 +203,14 @@ int main()
         window->draw(*tileFont2_1);
         font2_2Animation->Play(deltaTime);
         window->draw(*tileFont2_2);
-
-        character1->Update();
-
+        
         for(auto& item : *items)
         {
             item->Update();
         }
-      
+
+        character1->Update();
+
         score->Update();
 
         window->display(); //display para mostrar.
