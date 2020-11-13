@@ -17,6 +17,7 @@
 #define TILES2 "assets/sprites/tiles2.png"
 #define TILES3 "assets/sprites/tiles3.png"
 #define FONT1 "assets/fonts/8-BIT_WONDER.TTF"
+#define ICON "assets/manzanita.png"
 #define SPRITE_SCALE 4.f
 #define FPS 120
 #define PLAYER_MOVESPEED 3.0f
@@ -24,7 +25,10 @@
 int main()
 {
     //Esto es la ventana del gráfico
-    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_NAME);
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), GAME_NAME);
+    sf::Image* iconTexture{new sf::Image()};
+    iconTexture->loadFromFile(ICON);
+    window->setIcon(32, 32, iconTexture->getPixelsPtr());
     //Aqui vas a guardar los eventos dentro de la ventana, eje: teclado, mouse, etc.
     sf::Event event;
 
