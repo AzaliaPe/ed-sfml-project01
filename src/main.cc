@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
+#include <SFML/Audio.hpp>
 
 #include "Maze.hh"
 #include "Inputs.hh"
@@ -18,6 +19,7 @@
 #define TILES3 "assets/sprites/tiles3.png"
 #define FONT1 "assets/fonts/8-BIT_WONDER.TTF"
 #define ICON "assets/manzanita.png"
+#define BG_MUSIC "assets/audio/bgmusic.ogg"
 #define SPRITE_SCALE 4.f
 #define FPS 120
 #define PLAYER_MOVESPEED 3.0f
@@ -26,9 +28,20 @@ int main()
 {
     //Esto es la ventana del gráfico
     sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), GAME_NAME);
+    
+    //Icon
     sf::Image* iconTexture{new sf::Image()};
     iconTexture->loadFromFile(ICON);
     window->setIcon(32, 32, iconTexture->getPixelsPtr());
+
+    //Music
+    sf::SoundBuffer* soundBuffer{new sf::SoundBuffer()};
+    sf::Sound* sound{new sf::Sound()};
+    soundBuffer->loadFromFile(BG_MUSIC);
+    sound->setBuffer(*soundBuffer);
+    sound->setLoop(true);
+    sound->play();
+
     //Aqui vas a guardar los eventos dentro de la ventana, eje: teclado, mouse, etc.
     sf::Event event;
 

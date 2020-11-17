@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Score.hh"
 #include "GameObject.hh"
+#include "SFX.hh"
 
 class ContactListener : public b2ContactListener
 {
@@ -11,6 +12,7 @@ class ContactListener : public b2ContactListener
         Score* score;
         std::vector<GameObject*>* items;
         int sceneIndex{};
+        SFX* sfx;
     public:
         ContactListener(Score*&, std::vector<GameObject*>*&);
         ~ContactListener();
