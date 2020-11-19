@@ -10,6 +10,7 @@
 #include "GameObject.hh"
 #include "ContactListener.hh"
 #include "Score.hh"
+#include "GUI/Button.hh"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -42,6 +43,9 @@ int main()
     sound->setLoop(true);
     sound->play();
 
+    //Button
+    Button* button1{new Button(200.f, 200.f, 150.f, 50.f, 0.5f, new sf::Color(238, 4, 170), new sf::Color(255, 255, 255), window)};
+    
     //Aqui vas a guardar los eventos dentro de la ventana, eje: teclado, mouse, etc.
     sf::Event event;
 
@@ -227,6 +231,8 @@ int main()
         }
 
         character1->Update();
+
+        button1->Update();
 
         score->Update();
 
